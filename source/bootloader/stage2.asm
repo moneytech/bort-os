@@ -4,7 +4,6 @@ stage2:
         call    enable_a20_line
         jc      .handle_generic_error
 
-.after_a20:
         lgdt    [gdt.descriptor]
 
         mov     eax, cr0
@@ -41,7 +40,10 @@ stage2:
 
         ; We're in "Unreal Mode" now.
 
-        call    enable_a20_line
+        mov     ax, 800
+        mov     bx, 600
+        mov     cl, 32
+        call    set_vesa_mode
 
         mov     ah, 0x0E
         mov     al, 'A'
@@ -61,7 +63,7 @@ stage2:
         int     0x10
         jmp     $
 
- bits   32
+bits   32
 .protected_mode:
         mov     ax, 0x10
         mov     ds, ax
@@ -74,5 +76,6 @@ stage2:
 
 %include        "stage2/a20.asm"
 %include        "stage2/gdt.asm"
+%include        "stage2/vbe.asm"
 
 times   8 * 512 - ($ - $$)      db      0x00

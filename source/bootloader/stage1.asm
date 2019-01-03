@@ -7,6 +7,7 @@ stage1:
 .fix_code_segment:
         mov     [disk_index], dl
 
+        clc
         cld
         cli
 
