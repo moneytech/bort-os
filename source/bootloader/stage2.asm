@@ -44,6 +44,7 @@ stage2:
         mov     bx, 600
         mov     cl, 32
         call    set_vesa_mode
+        jc      .handle_generic_error
 
         mov     ah, 0x0E
         mov     al, 'A'

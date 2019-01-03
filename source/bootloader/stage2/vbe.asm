@@ -99,6 +99,7 @@ set_vesa_mode:
         cmp     cx, 0xFFFF
         je      .exit_failure
 
+        or      cx, 1 << 14
         mov     [.best_mode], cx
 
         add     si, 2
