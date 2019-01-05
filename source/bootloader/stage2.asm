@@ -46,10 +46,6 @@ stage2:
 
         ; We're in "Unreal Mode" now.
 
-        mov     ah, 0x0E
-        mov     al, 'A'
-        int     0x10
-
         cli
 
         mov     eax, cr0
@@ -73,10 +69,24 @@ bits   32
         mov     gs, ax
         mov     ss, ax
 
+        call    setup_identity_paging_and_long_mode
+
+        jmp     0x28:.long_mode
+
+bits    64
+.long_mode:
+        mov     ax, 0x00;
+        mov     ds, ax
+        mov     es, ax
+        mov     fs, ax
+        mov     gs, ax
+        mov     ss, ax
+
         jmp     $
 
 %include        "stage2/a20.asm"
 %include        "stage2/gdt.asm"
+%include        "stage2/paging.asm"
 %include        "stage2/vbe.asm"
 
 times   8 * 512 - ($ - $$)      db      0x00
