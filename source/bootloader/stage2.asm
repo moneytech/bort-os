@@ -4,6 +4,12 @@ stage2:
         call    enable_a20_line
         jc      .handle_generic_error
 
+        mov     ax, 800
+        mov     bx, 600
+        mov     cl, 32
+        call    set_vesa_mode
+        jc      .handle_generic_error
+
         lgdt    [gdt.descriptor]
 
         mov     eax, cr0
@@ -39,12 +45,6 @@ stage2:
         sti
 
         ; We're in "Unreal Mode" now.
-
-        mov     ax, 800
-        mov     bx, 600
-        mov     cl, 32
-        call    set_vesa_mode
-        jc      .handle_generic_error
 
         mov     ah, 0x0E
         mov     al, 'A'

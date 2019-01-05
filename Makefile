@@ -3,6 +3,7 @@ export BUILD_DIR     ?= $(ROOT_DIR)/build
 export BINARY_DIR    := $(ROOT_DIR)/binary
 export LIBRARIES_DIR := $(ROOT_DIR)/libraries
 export SOURCE_DIR    := $(ROOT_DIR)/source
+export TOOLS_DIR     := $(BUILD_DIR)/tools
 
 export IMAGE_PATH ?= $(BUILD_DIR)/bort-os.iso
 
@@ -19,7 +20,12 @@ qemu: all
 	$(QEMU) $(QEMU_FLAGS) -drive format=raw,file=$(IMAGE_PATH)
 
 all: $(MODULES)
-	cp $(BUILD_DIR)/bootloader/bootloader.bin $(IMAGE_PATH)
+	@$(MAKE) -C $(ROOT_DIR)/tools
+
+	@cp $(BUILD_DIR)/bootloader/bootloader.bin $(IMAGE_PATH)
+	@dd if=/dev/zero bs=1K count=2048 >> $(IMAGE_PATH) 2> /dev/null
+	@truncate $(IMAGE_PATH) --size=-$(shell stat -c %s $(BUILD_DIR)/bootloader/bootloader.bin)
+	@$(TOOLS_DIR)/bortfs-utils format $(IMAGE_PATH) 4096 4
 
 $(MODULES):
 	@for module in $(MODULES); do                      \
