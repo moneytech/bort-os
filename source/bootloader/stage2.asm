@@ -46,6 +46,11 @@ stage2:
 
         ; We're in "Unreal Mode" now.
 
+        mov     esi, KERNEL_BIN_NAME
+        mov     edi, 0x00100000
+        movzx   edx, byte [disk_index]
+        call    bortfs_load_file
+
         cli
 
         mov     eax, cr0
@@ -62,6 +67,7 @@ stage2:
 
 bits   32
 .protected_mode:
+        push    edx
         mov     ax, 0x10
         mov     ds, ax
         mov     es, ax
@@ -75,7 +81,7 @@ bits   32
 
 bits    64
 .long_mode:
-        mov     ax, 0x00;
+        mov     ax, 0x00
         mov     ds, ax
         mov     es, ax
         mov     fs, ax
@@ -84,7 +90,11 @@ bits    64
 
         jmp     $
 
+KERNEL_BIN_NAME         db      "test_file.txt", 0x00
+
 %include        "stage2/a20.asm"
+%include        "stage2/bortfs.asm"
+%include        "stage2/disk.asm"
 %include        "stage2/gdt.asm"
 %include        "stage2/paging.asm"
 %include        "stage2/vbe.asm"

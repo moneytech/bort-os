@@ -4,7 +4,7 @@ bits    16
 ; Carry set if couldn't enable the A20 line.
 enable_a20_line:
         call    .check_is_a20_enabled
-        jc      .enable_with_fast_gate_method
+        jc      .enable_with_bios_method
         ret
 
 .enable_with_bios_method:

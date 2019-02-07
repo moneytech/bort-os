@@ -12,12 +12,15 @@ export BCC  ?= bcc
 export LD86 ?= ld86
 
 export QEMU       := qemu-system-x86_64
-export QEMU_FLAGS := -no-reboot -no-shutdown -enable-kvm
+export QEMU_FLAGS := -no-reboot -no-shutdown -enable-kvm -monitor stdio
 
 MODULES := bootloader
 
 qemu: all
 	$(QEMU) $(QEMU_FLAGS) -drive format=raw,file=$(IMAGE_PATH)
+
+qemu-vb: all
+	$(QEMU) -no-reboot -no-shutdown -monitor stdio -drive format=raw,file=$(IMAGE_PATH)
 
 all: $(MODULES)
 	@$(MAKE) -C $(ROOT_DIR)/tools
@@ -26,6 +29,7 @@ all: $(MODULES)
 	@dd if=/dev/zero bs=1K count=2048 >> $(IMAGE_PATH) 2> /dev/null
 	@truncate $(IMAGE_PATH) --size=-$(shell stat -c %s $(BUILD_DIR)/bootloader/bootloader.bin)
 	@$(TOOLS_DIR)/bortfs-utils format $(IMAGE_PATH) 4096 4
+	@$(TOOLS_DIR)/bortfs-utils copy $(IMAGE_PATH) $(ROOT_DIR)/test_file.txt test_file.txt
 
 $(MODULES):
 	@for module in $(MODULES); do                      \
