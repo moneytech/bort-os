@@ -50,6 +50,7 @@ stage2:
         mov     edi, 0x00100000
         movzx   edx, byte [disk_index]
         call    bortfs_load_file
+        ; TODO: Check if the file was actually loaded successfully...
 
         cli
 
@@ -88,9 +89,15 @@ bits    64
         mov     gs, ax
         mov     ss, ax
 
+        mov     rax, 0x00100000
+        call    rax
+
+        ; Should never reach this point.
+        cli
+        hlt
         jmp     $
 
-KERNEL_BIN_NAME         db      "test_file.txt", 0x00
+KERNEL_BIN_NAME         db      "kernel.bin", 0x00
 
 %include        "stage2/a20.asm"
 %include        "stage2/bortfs.asm"
