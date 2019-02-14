@@ -95,6 +95,7 @@ bits    64
         ; Should never reach this point.
         cli
         hlt
+        mov     eax, 0xDEADBEAF
         jmp     $
 
 KERNEL_BIN_NAME         db      "kernel.bin", 0x00

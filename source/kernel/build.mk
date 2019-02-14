@@ -5,7 +5,7 @@ CXX := x86_64-elf-gcc
 LD  := x86_64-elf-ld
 
 CXX_FLAGS := -std=c++17 -Wall -Wextra -Wpedantic -O0 -g0
-CXX_FLAGS += -march=x86-64 -mno-mmx -mno-sse -mno-sse2 -mno-sse3 -mno-red-zone
+CXX_FLAGS += -mno-mmx -mno-sse -mno-sse2 -mno-sse3 -mno-red-zone
 CXX_FLAGS += -fno-stack-protector -ffreestanding -fno-builtin -fno-rtti -fno-exceptions
 CXX_FLAGS += -I$(CURRENT_DIR)
 

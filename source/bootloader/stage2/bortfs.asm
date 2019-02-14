@@ -96,35 +96,39 @@ bortfs_load_file:
         pop     edx
         pop     ebx
         pop     eax
-        push    ecx
 
 .load_chain_loop:
+        ; Calculate the first sector index of the block to load.
         push    edx
         xor     edx, edx
         mul     ebx
         pop     edx
 
         push    eax
+        push    ebx
+        push    ecx
+        mov     ecx, ebx
         mov     ebx, 1
-        mov     ecx, 8
 .load_block_sectors_loop:
-        mov     esi, .sector_buffer
-        xchg    esi, edi
+        push    edi
+        mov     edi, .sector_buffer
         call    read_sectors_from_disk
-        xchg    esi, edi
+        mov     esi, edi
+        pop     edi
 
         push    ecx
         mov     ecx, SECTOR_SIZE
-        a32 o32 rep     movsb
+        rep     a32 o32 movsb
         pop     ecx
 
         inc     eax
         dec     ecx
-        jnz     .load_block_sectors_loop
+        cmp     ecx, 0
+        jne     .load_block_sectors_loop
 
-        pop     eax
         pop     ecx
-
+        pop     ebx
+        pop     eax
         add     eax, ecx
         call    read_dword_from_disk
         cmp     eax, 0xFFFFFFFF

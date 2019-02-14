@@ -1,6 +1,0 @@
-some text xaxaxaxa
-asdfasdfasdfasdf
-0123456789
-ABCDEFGHIJKLMNOPQRSTUVWXYZ
-abcdefghijklmnopqrstuvwxyz
-`~!@#$%^&*()-_=+[{]}\|;:'",<.>/?

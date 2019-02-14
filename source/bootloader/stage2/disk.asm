@@ -28,6 +28,9 @@ read_sectors_from_disk:
 ; EAX Address of the byte to read.
 ; DL  Disk index to read from.
 read_byte_from_disk:
+        push    ebx
+        push    ecx
+
         push    dx
         xor     edx, edx
         mov     bx, SECTOR_SIZE
@@ -42,11 +45,17 @@ read_byte_from_disk:
         pop     edi
 
         mov     al, [__disk_asm_private.sector_buffer + ecx]
+
+        pop     ecx
+        pop     ebx
         ret
 
 ; EAX Address of the word to read.
 ; DL  Disk index to read from.
 read_word_from_disk:
+        push    ebx
+        push    ecx
+
         push    dx
         xor     edx, edx
         mov     bx, SECTOR_SIZE
@@ -61,11 +70,17 @@ read_word_from_disk:
         pop     edi
 
         mov     ax, [__disk_asm_private.sector_buffer + ecx]
+
+        pop     ecx
+        pop     ebx
         ret
 
 ; EAX Address of the dword to read.
 ; DL  Disk index to read from.
 read_dword_from_disk:
+        push    ebx
+        push    ecx
+
         push    dx
         xor     edx, edx
         mov     bx, SECTOR_SIZE
@@ -80,6 +95,9 @@ read_dword_from_disk:
         pop     edi
 
         mov     eax, [__disk_asm_private.sector_buffer + ecx]
+
+        pop     ecx
+        pop     ebx
         ret
 
 ; EAX Address of the string on disk.

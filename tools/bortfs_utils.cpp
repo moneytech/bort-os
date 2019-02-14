@@ -154,7 +154,7 @@ int copy_file(std::fstream& image_file, const std::string_view source_file_path,
     }
 
     const auto fat_offset = reserved_blocks * block_size;
-    const auto fat_entries_per_block = block_size / sizeof(uint32_t);
+    const auto fat_entries_per_block = block_size / sizeof(uint64_t);
     const auto fat_blocks = (block_count + fat_entries_per_block - 1) / fat_entries_per_block;
 
     std::fstream source_file{source_file_path.data(), std::ios::binary | std::ios::in};
