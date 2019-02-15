@@ -1,6 +1,7 @@
 BasedOnStyle: LLVM
 ColumnLimit: 100
 IndentWidth: 4
+ContinuationIndentWidth: 8
 PointerAlignment: Left
 AlignAfterOpenBracket: DontAlign
 AlignConsecutiveAssignments: true

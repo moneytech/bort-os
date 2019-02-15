@@ -89,14 +89,10 @@ bits    64
         mov     gs, ax
         mov     ss, ax
 
-        mov     rax, 0x00100000
-        call    rax
+        mov     rsp, 0xA0000
 
-        ; Should never reach this point.
-        cli
-        hlt
-        mov     eax, 0xDEADBEAF
-        jmp     $
+        ; Jump to the kernel.
+        jmp     0x00100000
 
 KERNEL_BIN_NAME         db      "kernel.bin", 0x00
 
