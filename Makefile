@@ -12,7 +12,7 @@ export BCC  ?= bcc
 export LD86 ?= ld86
 
 export QEMU           := qemu-system-x86_64
-export QEMU_FLAGS     := -no-reboot -no-shutdown -monitor stdio -m 2M
+export QEMU_FLAGS     := -no-reboot -no-shutdown -monitor stdio -serial file:serial.txt -m 2M
 export QEMU_FLAGS_KVM := $(QEMU_FLAGS) -enable-kvm
 
 MODULES := bootloader kernel
