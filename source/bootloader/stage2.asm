@@ -4,11 +4,28 @@ stage2:
         call    enable_a20_line
         jc      .handle_generic_error
 
-        mov     ax, 800
-        mov     bx, 600
-        mov     cl, 32
-        call    set_vesa_mode
-        jc      .handle_generic_error
+        ;mov     ax, 800
+        ;mov     bx, 600
+        ;mov     cl, 32
+        ;call    set_vesa_mode
+        ;jc      .handle_generic_error
+
+        ; Clear the screen by setting the 80x25 video mode.
+        mov     ah, 0x00
+        mov     al, 0x03
+        int     0x10
+
+        ; Set the 80x50 video mode by loading the 8x8 font.
+        mov     ax, 0x1112
+        mov     bl, 0x00
+        int     0x10
+
+        ; Something about blanking attribute. Should not be necessary in 21st
+        ; century, but it won't charm anything if put here. Just to make sure
+        ; that the 80x25 works correctly.
+        mov     ah, 0x12
+        mov     bl, 0x30
+        int     0x10
 
         lgdt    [gdt.descriptor]
 
@@ -90,6 +107,10 @@ bits    64
         mov     ss, ax
 
         mov     rsp, 0xA0000
+
+        mov     rax, 0xB8000
+        mov     rbx, 0x4141414141414141
+        mov     [rax], rbx
 
         ; Jump to the kernel.
         jmp     0x00100000
