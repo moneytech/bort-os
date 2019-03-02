@@ -7,10 +7,9 @@
 class VGA {
 public:
     VGA(const VGA&) = delete;
-    VGA(VGA&&) = default;
+    VGA(VGA&&) = delete;
     VGA& operator=(const VGA&) = delete;
-    VGA& operator=(VGA&&) = default;
-
+    VGA& operator=(VGA&&) = delete;
 
     static VGA& get_instance();
 
@@ -38,9 +37,10 @@ private:
     static constexpr uint64_t s_buffer_size =
             s_buffer_width * s_buffer_height * s_buffer_bytes_per_char;
 
-    uint8_t*  m_buffer = (uint8_t*)s_buffer_address;
+    uint16_t* m_buffer = reinterpret_cast<uint16_t*>(s_buffer_address);
     uint32_t  m_x_position = 0;
     uint32_t  m_y_position = 0;
     uint8_t   m_color = 0x07;
+    bool      m_show_cursor = true;
     bool      m_update_cursor = true;
 };

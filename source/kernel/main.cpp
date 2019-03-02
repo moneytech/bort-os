@@ -10,13 +10,19 @@
 extern "C" void kernel_main() __attribute__((section(".text.kernel_main")));
 
 extern "C" void kernel_main() {
+    GET_VGA().reset_screen();
+    GET_VGA().show_cursor(false);
+    GET_VGA().reset_screen();
+    GET_VGA().set_color(0x0F);
+    GET_VGA().put_string("BortOS v0.1.0-alpha0\n");
+    GET_VGA().set_color(0x07);
+
     initialize_serial(SerialPort::COM1);
     log(LogType::INFO, "Initialized: COM1\n");
 
     initialize_idt();
     log(LogType::INFO, "Initialized: IDT\n");
 
-    GET_VGA().reset_screen();
     GET_VGA().show_cursor(true);
     GET_VGA().put_string("This is a test!\n");
     GET_VGA().put_string("\tSome indent...\n");

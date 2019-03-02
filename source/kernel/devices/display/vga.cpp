@@ -31,18 +31,23 @@ void VGA::clear_screen() {
 }
 
 void VGA::show_cursor(bool show) {
-    if (show) {
+    if (show && !m_show_cursor) {
         port_out_byte(0x03D4, 0x0A);
         port_out_byte(0x03D5, (port_in_byte(0x03D5) & 0xC0) | 0);
         port_out_byte(0x03D4, 0x0B);
         port_out_byte(0x03D5, (port_in_byte(0x03D5) & 0xE0) | 15);
-    } else {
+    } else if (!show && m_show_cursor) {
         port_out_byte(0x03D4, 0x0A);
         port_out_byte(0x03D5, 0x20);
     }
+    m_show_cursor = show;
 }
 
 void VGA::set_cursor_position(const uint32_t x, const uint32_t y) {
+    if (!m_show_cursor) {
+        return;
+    }
+
     const auto offset = x + y * s_buffer_width;
     port_out_byte(0x03D4, 0x0F);
     port_out_byte(0x03D5, (uint8_t)(offset & 0xFF));
@@ -57,7 +62,7 @@ void VGA::set_color(const uint8_t color) {
 }
 
 void VGA::put_char(const char c) {
-    const auto offset = (m_x_position + m_y_position * s_buffer_width) * s_buffer_bytes_per_char;
+    const auto offset = (m_x_position + m_y_position * s_buffer_width);
     switch (c) {
         case '\b':
             if (m_x_position > 0) {
@@ -67,10 +72,6 @@ void VGA::put_char(const char c) {
 
         case '\t':
             m_x_position += 8 - (m_x_position % 8);
-            if (m_x_position >= 80) {
-                m_x_position = 0;
-                m_y_position += 1;
-            }
             break;
 
         case '\n':
@@ -84,17 +85,15 @@ void VGA::put_char(const char c) {
 
         case '\\':
         case '\"':
-        default: {
-            m_buffer[offset + 0] = c;
-            m_buffer[offset + 1] = m_color;
+        default:
+            m_buffer[offset] = c | (m_color << 8);
             m_x_position += 1;
-            if (m_x_position >= 80) {
-                m_x_position = 0;
-                m_y_position += 1;
-            }
-        }
     }
 
+    if (m_x_position >= 80) {
+        m_x_position = 0;
+        m_y_position += 1;
+    }
     if (m_update_cursor) {
         set_cursor_position(m_x_position, m_y_position);
     }
