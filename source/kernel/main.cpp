@@ -1,3 +1,4 @@
+#include <devices/display/vga.hpp>
 #include <interrupts/idt.hpp>
 #include <misc/logger.hpp>
 #include <misc/serial.hpp>
@@ -8,8 +9,6 @@
 // the very first thing in the output file.
 extern "C" void kernel_main() __attribute__((section(".text.kernel_main")));
 
-int div(int a, int b) { return a / b; };
-
 extern "C" void kernel_main() {
     initialize_serial(SerialPort::COM1);
     log(LogType::INFO, "Initialized: COM1\n");
@@ -17,7 +16,12 @@ extern "C" void kernel_main() {
     initialize_idt();
     log(LogType::INFO, "Initialized: IDT\n");
 
-    const int x = div(7, 0);
+    GET_VGA().reset_screen();
+    GET_VGA().show_cursor(true);
+    GET_VGA().put_string("This is a test!\n");
+    GET_VGA().put_string("\tSome indent...\n");
+    GET_VGA().put_string("Carriage return?\r");
+
     while (true) {
     }
 }
