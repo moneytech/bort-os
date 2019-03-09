@@ -1,3 +1,6 @@
+#include <stddef.h>
+#include <stdint.h>
+
 #include <devices/display/vga.hpp>
 #include <interrupts/idt.hpp>
 #include <misc/logger.hpp>
@@ -9,6 +12,8 @@
 // the very first thing in the output file.
 extern "C" void kernel_main() __attribute__((section(".text.kernel_main")));
 
+extern "C" void initialize_gdt();
+
 extern "C" void kernel_main() {
     GET_VGA().reset_screen();
     GET_VGA().show_cursor(false);
@@ -19,6 +24,9 @@ extern "C" void kernel_main() {
 
     initialize_serial(SerialPort::COM1);
     log(LogType::INFO, "Initialized: COM1\n");
+
+    initialize_gdt();
+    log(LogType::INFO, "Initialized: GDT\n");
 
     initialize_idt();
     log(LogType::INFO, "Initialized: IDT\n");
